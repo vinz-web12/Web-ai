@@ -8,6 +8,5 @@
   },
   "dependencies": {
     "openai": "^4.0.0" 
-    // ^ Pastikan versi OpenAI-nya adalah 4 atau yang terbaru
   }
 }
