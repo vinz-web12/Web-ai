@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Web Aman</title>
+    <style>
+        /* Gaya CSS Sederhana */
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        textarea { width: 100%; padding: 10px; box-sizing: border-box; margin-bottom: 10px; }
+        button { padding: 10px 20px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 5px; }
+        #output { border: 1px solid #ccc; padding: 15px; min-height: 100px; margin-top: 15px; white-space: pre-wrap; background-color: #f0f0f0; }
+        .loading { color: #007bff; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>Tanyakan Sesuatu ke AI 🤖</h1>
+
+    <textarea id="promptInput" rows="5" placeholder="Tuliskan pertanyaanmu di sini..."></textarea>
+    <button onclick="sendPrompt()" id="sendButton">Kirim</button>
+
+    <h2>Jawaban:</h2>
+    <div id="output">...</div>
+
+    <script>
+        // Fungsi untuk mengirimkan prompt ke serverless function (backend)
+        async function sendPrompt() {
+            const prompt = document.getElementById('promptInput').value;
+            const outputDiv = document.getElementById('output');
+            const button = document.getElementById('sendButton');
+            
+            if (!prompt.trim()) {
+                outputDiv.textContent = "Mohon masukkan prompt.";
+                return;
+            }
+
+            // Status loading
+            outputDiv.innerHTML = '<span class="loading">AI sedang memproses...</span>';
+            button.disabled = true;
+
+            try {
+                // Mengirim permintaan POST ke Serverless Function di Vercel
+                // Alamat '/api/generate' akan otomatis dihubungkan oleh Vercel
+                const response = await fetch('/api/generate', { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Menampilkan jawaban dari AI
+                    outputDiv.textContent = data.response;
+                } else {
+                    // Menampilkan pesan error dari backend
+                    outputDiv.textContent = `Error: ${data.error || 'Terjadi kesalahan saat menghubungi API. Cek kunci API di Vercel.'}`;
+                }
+
+            } catch (error) {
+                console.error('Fetch error:', error);
+                // Pesan ini muncul jika Vercel/Serverless function tidak dapat diakses
+                outputDiv.textContent = `Gagal terhubung ke server. Pastikan proyek sudah di-deploy dan file index.html sudah benar.`;
+            } finally {
+                button.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
