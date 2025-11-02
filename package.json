@@ -1,12 +1,12 @@
 {
-  "name": "openai-web-app",
-  "version": "4.0.0",
-  "description": "Simple web app using OpenAI serverless function.",
+  "name": "gemini-web-app",
+  "version": "1.0.0",
+  "description": "Simple web app using Google Gemini serverless function.",
   "main": "api/generate.js",
   "scripts": {
-    "start": "echo 'This project runs on Vercel/Netlify functions.'"
+    "start": "echo 'This project runs on Vercel functions.'"
   },
   "dependencies": {
-    "openai": "^4.0.0" 
+    "google-genai": "^0.1.0" 
   }
 }
